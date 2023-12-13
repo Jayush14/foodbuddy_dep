@@ -19,8 +19,6 @@ export default function Home() {
     response = await response.json();
     setFoodItem(response[0]);
     setFoodCat(response[1]);
-
-    // console.log(response[0],response[1]);
   };
 
   useEffect(() => {
@@ -28,7 +26,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
+    <div style={{ backgroundColor: "#F5F5DC" }}>
       <div>
         <Navbar />
       </div>
@@ -52,7 +50,6 @@ export default function Home() {
                     setSearch(e.target.value);
                   }}
                 />
-                {/* <button className="btn btn-outline-success text-white bg-success" type="submit">Search</button> */}
               </div>
             </div>
             <div className="carousel-item active">
@@ -109,42 +106,35 @@ export default function Home() {
       <div className="container">
         {FoodCat != []
           ? FoodCat.map((data) => {
+              const filteredItems =
+                FoodItem != []
+                  ? FoodItem.filter(
+                      (item) =>
+                        item.CategoryName === data.CategoryName &&
+                        item.name.toLowerCase().includes(search.toLowerCase())
+                    )
+                  : [];
+
               return (
-                <div className="row mb-3">
-                  <div key={data._id} className="fs-3 m-3">
+                <div key={data._id}>
+                  <div className="fs-3 m-3" style={{ color: "black", fontFamily: "Arial, sans-serif" , fontSize: "100px" }}>
                     {data.CategoryName}
                   </div>
                   <hr />
-                  {FoodItem != [] ? (
-                    FoodItem.filter(
-                      (item) =>
-                        item.CategoryName === data.CategoryName &&
-                        item.name
-                          .toLowerCase()
-                          .includes(search.toLocaleLowerCase())
-                    ).map((filterItems) => {
-                      return (
-                        <div
-                          key={filterItems._id}
-                          className="col-12 col-md-6 col-lg-3"
-                        >
-                          <Card
-                            foodItem={filterItems}
-                            options={filterItems.options[0]}
-                          ></Card>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div>No such Data Found</div>
-                  )}
+                  <div className="row row-cols-1 row-cols-md-3 g-4">
+                    {filteredItems.map((filterItems) => (
+                      <div key={filterItems._id} className="col">
+                        <Card foodItem={filterItems} options={filterItems.options[0]} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               );
             })
           : ""}
       </div>
       <div>
-        <Footr />{" "}
+        <Footr />
       </div>
     </div>
   );
