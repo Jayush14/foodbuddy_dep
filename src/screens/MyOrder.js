@@ -46,7 +46,7 @@ export default function MyOrder() {
             <div className='container'>
                 <div className='row'>
 
-                    {OrderData !== {} ? Array(OrderData).map(data => {
+                    {OrderData.length !== 0 ? Array(OrderData).map(data => {
                         return (
                             data.OrderData ?
                                 data.OrderData.order_data.slice(0).reverse().map((item) => {

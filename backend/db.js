@@ -1,7 +1,7 @@
 // const require = createRequire(import.meta.url);
 const mongoose = require("mongoose");
 
-const mongoURI = 'mongodb+srv://gofood:gofood123@cluster0.zpusfds.mongodb.net/gofoodmern?retryWrites=true&w=majority';
+const mongoURI =  "mongodb+srv://gofood:gofood123@cluster0.zpusfds.mongodb.net/gofoodmern?retryWrites=true&w=majority";
 
 const mongoDB = async () => {
   await mongoose.connect(mongoURI,{useNewUrlParser:true},async(err,result)=>{
@@ -14,8 +14,8 @@ const mongoDB = async () => {
                    foodCategory.find({}).toArray(function(err,catData){
                         if(err) console.log(err);
                         else{
-                          global.fooditems=data;
-                          global.food_category=catData;
+                          global.food_items=data;
+                          global.foodCategory=catData;
                         }
 
 

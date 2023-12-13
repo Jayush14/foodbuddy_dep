@@ -33,7 +33,7 @@ export default function Login() {
           setcredentials({...credentials,[event.target.name]:event.target.value})
       }
   return (
-    <div style={{backgroundImage: 'url("https://images.pexels.com/photos/326278/pexels-photo-326278.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")', height: '100vh', backgroundSize: 'cover' }}>
+    <div style={{backgroundImage: 'url("https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg?auto=compress&cs=tinysrgb&w=600")', height: '100vh', backgroundSize: 'cover' }}>
       <div>
         <Navbar/>
       </div>
@@ -42,13 +42,13 @@ export default function Login() {
         <form className='w-50 m-auto mt-5 border-success rounded' onSubmit={handleSubmit}>
     
     <div className="mb-3">
-      <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-      <input type="email" className="form-control bg-transparent border border-success" name='email' value={credentials.email} onChange={onChange} id="exampleInputEmail1" aria-describedby="emailHelp"/>
+      <label htmlFor="exampleInputEmail1" className="form-label" style={{ color: 'black' }} >Email address</label>
+      <input type="email" className="form-control bg-transparent border border-success" style={{ color: 'black', '::placeholder': { color: 'black' } }} name='email' value={credentials.email} onChange={onChange} id="exampleInputEmail1" aria-describedby="emailHelp"/>
       <div id="emailHelp" className='form-text text-danger'>We'll never share your email with anyone else.</div>
     </div>
     <div className="mb-3">
-      <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-      <input type="password" className="form-control bg-transparent border border-success" name='password' value={credentials.password} onChange={onChange} id="exampleInputPassword1"/>
+      <label htmlFor="exampleInputPassword1" className="form-label" style={{ color: 'black' }} >Password</label>
+      <input type="password" className="form-control bg-transparent border border-success" name='password' value={credentials.password} style={{ color: 'black', '::placeholder': { color: 'black' } }} onChange={onChange} id="exampleInputPassword1"/>
     </div>
     
     <button type="submit" className="m-3 btn btn-success">Submit</button>
