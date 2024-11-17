@@ -1,0 +1,36 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #333;
+    color: #f4b400;
+    font-size: 1.2rem;
+    font-family: Arial, sans-serif;
+    position: fixed; /* Make navbar fixed at the top */
+    top: 0; /* Position it at the very top */
+    width: 100%; /* Stretch navbar to full width */
+    z-index: 1000; /* Ensure it stays above other content */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for effect */
+  }
+  
+  .navbar-title {
+    font-size: 2rem;
+    color: #efd798d7;
+  }
+  
+  .navbar-link {
+    color: #f4b400;
+    margin-right: 1rem;
+    text-decoration: none;
+  }
+  
+  .navbar-link:hover {
+    color: #fff;
+  }
+  
+  /* Add a margin-top to the page content to account for the fixed navbar height */
+  .page-content {
+    margin-top: 60px; /* Adjust based on your navbar height */
+  }
+  

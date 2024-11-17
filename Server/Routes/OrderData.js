@@ -4,6 +4,7 @@ const Order=require('../models/Orders')
 
 
 router.post('/OrderData', async (req,res)=>{
+    console.log(req.body)
 let data=req.body.order_data
 await data.splice(0,0,{Order_date: req.body.order_date})
 
