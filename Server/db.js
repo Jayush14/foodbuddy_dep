@@ -1,10 +1,12 @@
 // const require = createRequire(import.meta.url);
 const mongoose = require("mongoose");
 
-const mongoURI =  "mongodb+srv://gofood:gofood123@cluster0.zpusfds.mongodb.net/gofoodmern?retryWrites=true&w=majority";
+const mongoURI =  "mongodb+srv://gofood:EEdKc3fo5UctxhqZ@cluster0.zpusfds.mongodb.net/gofoodmern?retryWrites=true&w=majority";
+
 //ayush jain
 const mongoDB = async () => {
   await mongoose.connect(mongoURI,{useNewUrlParser:true},async(err,result)=>{
+    console.log(err);
         if(err) console.log("...",err)
         else{
                    console.log("connected");
@@ -28,7 +30,7 @@ const mongoDB = async () => {
                     // }
                    })
         }
-  });
+  })
 }  
 
 module.exports = mongoDB;

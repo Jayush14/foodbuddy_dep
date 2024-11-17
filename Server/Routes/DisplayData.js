@@ -3,7 +3,7 @@ const router=express.Router();
 
 router.post('/foodData',(req,res)=>{
     try{
-        // console.log(global.fooditems, global.food_category)
+        //  console.log(global.fooditems, global.food_category)
         res.send([global.food_items,global.foodCategory])
     } catch(error){
            console.log(error.message);
@@ -12,5 +12,7 @@ router.post('/foodData',(req,res)=>{
 
 
 })
+
+
 
 module.exports =router;

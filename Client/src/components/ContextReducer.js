@@ -11,21 +11,43 @@ case "REMOVE":
     let newArr=[...state]
     newArr.splice(action.index, 1)
     return newArr;
-    case "UPDATE":
-        let arr=[...state]
-        arr.find((food,index)=>{
-            if(food.id===action.id){
-                console.log(food.qty,parseInt(action.qty),action.price+food.price)
-                arr[index]={ ...food,qty:parseInt(action.qty)+food.qty,price:action.price+food.price}
-            }
-            return arr;
-        })
+case "UPDATE":
+    let arr =[...state]
+    arr.find((food,index)=>{
+        if(food.id===action.id){
+            console.log(food.qty,parseInt(action.qty),action.price+food.price)
+            arr[index]={ ...food,qty:parseInt(action.qty)+food.qty,price:action.price+food.price}
+        }
         return arr;
-        case "DROP":
-            let empArray=[]
-            return empArray
-    default:
-        console.log("Error in Reducer");
+    })
+    return arr;
+case "INCREASE":
+    let increasedArr = [...state];
+    increasedArr = increasedArr.map((food) => {
+        if (food.id === action.id) {
+        return { ...food, qty: food.qty + 1 ,price: (food.price / food.qty) * (food.qty + 1)};
+        }
+        return food;
+    });
+    console.log(increasedArr)
+    return increasedArr;
+    
+case "DECREASE":
+let decreasedArr = [...state];
+decreasedArr = decreasedArr.map((food) => {
+    if (food.id === action.id && food.qty > 1) {
+    // Ensuring quantity doesn't go below 1
+    return { ...food, qty: food.qty - 1,price: (food.price / food.qty) * (food.qty - 1) };
+    }
+    return food;
+});
+return decreasedArr;
+
+case "DROP":
+    let empArray=[]
+    return empArray
+default:
+    console.log("Error in Reducer");
 
   }
 }

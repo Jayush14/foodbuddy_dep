@@ -1,16 +1,26 @@
 import React, { useEffect,useRef, useState } from 'react'
 import { useDispatchCart,useCart } from './ContextReducer'
+import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart} from "@fortawesome/free-solid-svg-icons";
 
 export default function Card(props) {
   let dispatch=useDispatchCart();
   let data=useCart();
   const priceRef=useRef();
+  const navigate=useNavigate();
   let options=props.options;
   let priceoptions=Object.keys(options)
   const[qty,setQty]=useState(1);
   const[size,setSize]=useState("");
+  const [favorite, setFavorite] = useState(false);
+
   const handleAddToCart= async ()=>{
-      
+      if(!localStorage.getItem('authToken')){
+        alert("Login to continue")
+        navigate("/login")
+        return
+      }
     let food=[]
     for(const item of data)
     {
@@ -42,55 +52,96 @@ export default function Card(props) {
   setSize(priceRef.current.value)
   },[])
   return (
-    <div>
-      <div>
-        <div className="card mt-3" style={{ width: "18rem", maxHeight: "360px" }}>
-          <img
-            src={props.foodItem.img}
-            className="card-img-top"
-            alt="..."
-            style={{ height: "120px", objectFit: "fill" }}
-          />
-          <div className="card-body">
-            <h5 className="card-title">{props.foodItem.name}</h5>
-            <div className="container w-100">
-              <select
-                className="m-2 h-100 bg-warning rounded"
-                onChange={(e) => setQty(e.target.value)}
-              >
-                {Array.from(Array(6), (e, i) => {
-                  return (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  );
-                })}
-              </select>
+    <div className="my-3">
+      <div
+        className="card mt-3"
+        style={{
+          width: "18rem",
+          maxHeight: "360px",
+          backgroundColor: "#f3ebe3",
+          color: "#2e2e35",
+          border: "solid 2px #f2b315",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+          borderRadius: "8px",
+        }}
+      >
+        <img
+          src={props.foodItem.img}
+          className="card-img-top"
+          alt={props.foodItem.name}
+          style={{
+            height: "120px",
+            objectFit: "cover",
+            borderTopLeftRadius: "8px",
+            borderTopRightRadius: "8px",
+          }}
+        />
+        <div className="card-body">
+          <div className="d-flex justify-content-between">
+          <h5 className="card-title">{props.foodItem.name}</h5>
+          {favorite ? <FontAwesomeIcon icon={faHeart} onClick={() => setFavorite(!favorite)} style={{color: "#f2b315" }} /> : <FontAwesomeIcon icon={faHeart} onClick={() => setFavorite(!favorite)} style={{color: "#efd798d7" }} />}
+          </div>  
 
-              <select
-                className="m-2 h-100 bg-warning rounded"
-                ref={priceRef}
-                onChange={(e) => setSize(e.target.value)}
-              >
-                {priceoptions.map((data) => {
-                  return <option key={data} value={data}>{data}</option>;
-                })}
-              </select>
-              <div className="d-inline h-100 fs-5">
-                Rs{finalPrice}/-
-              </div>
-            </div>
-            <hr></hr>
-            <button
-              className="btn btn-warning justify-center ms-2"
-              onClick={handleAddToCart}
+          <div className="d-flex justify-content-between">
+         
+            <div className="d-flex">
+            <select
+              className="m-2 h-100"
+              style={{
+                backgroundColor: "#f2b315",
+                color: "#2e2e35",
+                border: "none",
+                borderRadius: "5px",
+              }}
+              onChange={(e) => setQty(e.target.value)}
             >
-              Add to Cart
-            </button>
+              {Array.from(Array(6), (e, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
+            </select>
+  
+            <select
+              className="m-2 h-100"
+              style={{
+                backgroundColor: "#f2b315",
+                color: "#2e2e35",
+                border: "none",
+                borderRadius: "5px",
+              }}
+              ref={priceRef}
+              onChange={(e) => setSize(e.target.value)}
+            >
+              {priceoptions.map((data) => (
+                <option key={data} value={data}>
+                  {data}
+                </option>
+              ))}
+            </select>
+            </div>
+
+  
+            <div className="d-inline h-100 fs-5">
+              <span style={{ color: "#f2b315" }}>Rs {finalPrice}/-</span>
+            </div>
           </div>
+          <hr style={{ borderColor: "#f3ebe3" }} />
+          <button
+            className="btn btn-warning w-100"
+            style={{
+              backgroundColor: "#f2b315",
+              color: "#2e2e35",
+              border: "none",
+            }}
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
   );
+  
 
 }

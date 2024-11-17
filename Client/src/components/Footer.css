@@ -1,0 +1,17 @@
+footer {
+    flex-wrap: wrap;
+  }
+  
+  @media (max-width: 768px) {
+    footer {
+      text-align: center;
+    }
+    .nav {
+      justify-content: center;
+    }
+    .col-md-4 {
+      flex-basis: 100%;
+      margin-top: 10px;
+    }
+  }
+  

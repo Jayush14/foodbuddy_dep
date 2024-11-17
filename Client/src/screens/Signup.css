@@ -1,0 +1,74 @@
+.password-input-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .password-input {
+    width: 100%;
+    padding-right: 40px; /* Add padding to make space for the button */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .toggle-password-visibility{
+    position: absolute;
+
+    right: 2%; /* Position the icon inside the input field */
+    top: 68%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+  .toggle-password-visibility-b {
+    position: absolute;
+
+    right: 2%; /* Position the icon inside the input field */
+    top: 68%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  /* Responsive styling for the form */
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+      padding: 20px;
+    }
+  
+    form {
+      width: 100%;
+      max-width: none;
+      padding: 20px;
+      margin-top: 3vh;
+      margin-bottom: 3vh;
+    }
+  
+    .toggle-password-visibility,
+    .toggle-password-visibility-b {
+      right: 10px; /* Adjust positioning for smaller screens */
+    }
+  }
+  
+  /* Style for the full page background */
+  body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Styling the container for better responsiveness */
+  .containers {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
