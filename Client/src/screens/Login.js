@@ -17,7 +17,7 @@ export default function Login() {
       method: "GET",
       credentials: "include",  // Ensure the session cookie is sent with the request
     });
-  
+    console.log("response",response)
     const data = await response.json();
     console.log(data);
   };

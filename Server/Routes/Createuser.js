@@ -131,4 +131,9 @@ router.post("/loginuser", [
     }
   })
 
+  router.get("/logout", async (req,res)=>{
+    req.session.destroy();
+    res.json({success : true , message: "logged out successfully"});
+  })
+
 module.exports=router;
