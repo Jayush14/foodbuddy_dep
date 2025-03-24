@@ -8,7 +8,7 @@ const bcrypt=require("bcryptjs")
 const jwtSecret="abcdefghijklmnopqrstuvwxyzhaha$#"
 const isAuthenticated = require('../Middleware/authMiddleware');
 // SignUP user
-
+const mongoose = require("mongoose");
 router.post("/Createuser",[
 body('email').isEmail(),
 body('name').isLength({ min: 5 }),
@@ -57,15 +57,11 @@ router.post("/loginuser", [
         {
           return res.status(400).json({ errors:"Try logging in with correct credentials" })
         }
-       const authToken = jwt.sign({ id: userData.id }, jwtSecret, {
-         expiresIn: "1d"
-       });
        
         req.session.user= {
           userId:userData.id,
           email:userData.email,
           name:userData.name,
-          authToken:authToken
         }
 
         return res.json({success:true, message:"Login Successfull"});
@@ -79,38 +75,59 @@ router.post("/loginuser", [
 
 //continue with google
 
-  router.post("/continueWithGoogle",async(req,res)=>{
-    const decoded = jwt.decode(req.body.token, jwtSecret);
-     console.log(decoded);
-    let email=decoded.email;
-    try{
-        let userData= await User.findOne({email});
-        if(!userData)
-        {
-          const salt= await bcrypt.genSalt(10);
-          let secPasssword= await bcrypt.hash("123456", salt)
-          let user= await User.create({
-            name: decoded.name,
-            password: secPasssword,
-            email:decoded.email
-        });
-        userData = user;
-        }
-        
-        req.session.user= {
-          userId:userData.id,
-          email:userData.email,
-          name:userData.name
-        }
+const LoginByGoogle = async (req, res, email) => {
+  try {
+    let userData = await User.findOne({ email });
 
-        return res.json({success:true, message:"Login Successfull"});
-      
-  
-    }  catch(error){
-      console.log(error);
-      res.json({success:false});
+    if (!userData) {
+      return res.status(400).json({ errors: "User Not find" });
     }
-  })
+
+    req.session.user= {
+      userId:userData.id,
+      email:userData.email,
+      name:userData.name,
+    }
+
+    return res.json({success:true, message:"Login Successfull"});
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+router.post("/continueWithGoogle", async (req, res) => {
+  try {
+    const decoded = jwt.decode(req.body.token, jwtSecret);
+
+    if (!decoded || !decoded.email) {
+      return res.status(400).json({ success: false, message: "Invalid Google token" });
+    }
+
+    let email = decoded.email;
+    let userData = await User.findOne({ email });
+
+    // If user doesn't exist, create new user
+    if (!userData) {
+      const salt = await bcrypt.genSalt(10);
+      let secPassword = await bcrypt.hash("123456", salt);
+
+      let user = await User.create({
+        name: decoded.name,
+        password: secPassword,
+        email: decoded.email,
+      });
+
+      userData = user;
+    }
+
+    return LoginByGoogle(req, res, userData.email);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, error: "Server error" });
+  }
+});
 
   //get user details
 
@@ -132,8 +149,24 @@ router.post("/loginuser", [
   })
 
   router.get("/logout", async (req,res)=>{
+    try{
     req.session.destroy();
     res.json({success : true , message: "logged out successfully"});
+    } catch(error){
+      console.log(error);
+      res.json({success:false});
+    }
   })
+
+  router.post("/clear-sessions", async (req, res) => {
+    try {
+      const sessionCollection = mongoose.connection.collection("mySessions"); // Replace with your session collection name
+      await sessionCollection.deleteMany({}); // Delete all session documents
+      return res.json({ success: true, message: "All sessions cleared successfully" });
+    } catch (err) {
+      console.error("Error clearing sessions:", err);
+      return res.status(500).json({ success: false, message: "Failed to clear sessions" });
+    }
+  }); 
 
 module.exports=router;

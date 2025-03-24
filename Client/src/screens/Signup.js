@@ -6,8 +6,11 @@ import { GoogleLogin } from "@react-oauth/google";
 import Footr from "../components/Footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
+import { useGlobalState } from "../ContextAPI/GlobalStateContext";
+import loginWithGoogle from "../APIendpoint/loginWithGoogle";
 import "./Signup.css";
 export default function Signup() {
+  const { state ,dispatch } = useGlobalState();
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
     name: "",
@@ -74,29 +77,15 @@ export default function Signup() {
     setShowPassword((prev) => !prev);
   };
 
-  function onGoogleLoginSuccess(res) {
-    // console.log("Login Success: currentUser:", res);
-
-    fetch("http://localhost:5000/api/continueWithGoogle", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        token: res.credential,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data.success) {
-          localStorage.setItem("userEmail", data.email);
-          localStorage.setItem("authToken", data.authToken);
-          console.log(localStorage.getItem("authToken"));
-          navigate("/");
-        }
-      })
-      .catch((err) => console.log(err));
+  async function onGoogleLoginSuccess(res) {
+    const userData = await loginWithGoogle(res);
+    if (userData != null) {
+      dispatch({ type: "SET_LOGIN_STATUS", payload: true });
+      dispatch({ type: "SET_USER", payload: userData.user });
+      console.log("User Data: ", userData);
+      console.log("Satate: ", state);
+      navigate("/");
+    }
   }
 
   return (
@@ -226,7 +215,7 @@ export default function Signup() {
             </button>
           </div>
           <div className="text-center mt-4">
-            <span>or continue with</span>
+            <span style={{"color": "black"}} >or continue with</span>
             <div className="my-3 d-flex justify-content-center">
               <GoogleLogin
                 onSuccess={(credentialResponse) => {

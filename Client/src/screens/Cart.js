@@ -1,15 +1,11 @@
 import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useCart, useDispatchCart } from "../components/ContextReducer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus, faTrash } from "@fortawesome/free-solid-svg-icons";
-
+import  {useGlobalState}  from "../ContextAPI/GlobalStateContext";
 export default function Cart() {
-  let data = useCart();
-  let dispatch = useDispatchCart();
-
-
-
+  const { state, dispatch } = useGlobalState();
+  let data = state.cart;
   const handleCheckOut = async () => {
     let userEmail = localStorage.getItem("userEmail");
     console.log("User Email:", userEmail);

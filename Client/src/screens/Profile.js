@@ -56,9 +56,9 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className="profile-page" style={{ backgroundColor: '#f3ebe3' }}>
+        <div className="profile-page" style={{ backgroundColor: '#f3ebe3'}}>
             <Navbar />
-            <div className="profile-content" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', padding: '20px' }}>
+            <div className="profile-content" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', padding: '20px',marginTop:"90px" }}>
                 {/* User Info Section */}
                 <div className="user-info-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#f2b315', padding: '20px', borderRadius: '10px' }}>
                     <img

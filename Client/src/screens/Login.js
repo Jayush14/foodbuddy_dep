@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footr from "../components/Footer";
@@ -7,20 +7,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "./Signup.css";
 import Cookies from "js-cookie";
+import { useGlobalState } from "../ContextAPI/GlobalStateContext";
+import getUserData from "../APIendpoint/getUserData";
+import loginWithGoogle from "../APIendpoint/loginWithGoogle";
 export default function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   let navigate = useNavigate();
+  const { state, dispatch } = useGlobalState();
 
-
-  const fetchProtectedData = async () => {
-    const response = await fetch("http://localhost:5000/api/getUserDetails", {
-      method: "GET",
-      credentials: "include",  // Ensure the session cookie is sent with the request
-    });
-    console.log("response",response)
-    const data = await response.json();
-    console.log(data);
-  };
   const handleSubmit = async (abc) => {
     abc.preventDefault();
     const response = await fetch("http://localhost:5000/api/loginuser", {
@@ -43,13 +37,20 @@ export default function Login() {
     if (json.success) {
       const myCookieValue = Cookies.get('connect.sid');
       console.log("Cookies bnsavgsj: ",myCookieValue);
-      fetchProtectedData();
+      const data = await getUserData();
+      if(data!=null){
+        dispatch({ type: "SET_LOGIN_STATUS", payload: true });
+        dispatch({ type: "SET_USER", payload: data.user });
+        navigate("/");
+      }
       // localStorage.setItem("userEmail", json.user.email);
       // localStorage.setItem("authToken", json.authToken);
       // console.log(localStorage.getItem("authToken"));
-      navigate("/");
+      
     }
   };
+
+
 
   const onChange = (event) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
@@ -88,6 +89,16 @@ export default function Login() {
       .catch((err) => console.log(err));
   }
 
+    async function onGoogleLoginSuccess(res) {
+      const userData = await loginWithGoogle(res);
+      if (userData != null) {
+        dispatch({ type: "SET_LOGIN_STATUS", payload: true });
+        dispatch({ type: "SET_USER", payload: userData.user });
+        console.log("User Data: ", userData);
+        console.log("Satate: ", state);
+        navigate("/");
+      }
+    }
  
 
   return (
@@ -173,8 +184,8 @@ export default function Login() {
             Submit
           </button>
 
-          {/* <div className="text-center mt-4">
-            <span style={{ color: "#2e2e35" }}>or continue with</span>
+          <div className="text-center mt-4">
+            <span style={{"color": "black"}}>or continue with</span>
             <div className="my-3 d-flex justify-content-center">
               <GoogleLogin
                 onSuccess={(credentialResponse) => {
@@ -185,7 +196,7 @@ export default function Login() {
                 }}
               />
             </div>
-          </div> */}
+          </div>
           
         </form>
       </div>

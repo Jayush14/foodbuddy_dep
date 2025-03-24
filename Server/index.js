@@ -32,14 +32,18 @@ app.use((req, res, next) => {
 
 const store = new MongoDBSession({
   uri: "mongodb+srv://gofood:EEdKc3fo5UctxhqZ@cluster0.zpusfds.mongodb.net/gofoodmern?retryWrites=true&w=majority",
-  collection: 'mySessions'
+  collection: 'mySessions',
+  expires: 86400
 })
 
 // Session configuration
 app.use(session({
   secret: 'keyboardkitteh',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 86400 * 1000,
+  },
   store: store,
 }));
 

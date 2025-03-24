@@ -1,56 +1,63 @@
-import React, { useEffect,useRef, useState } from 'react'
-import { useDispatchCart,useCart } from './ContextReducer'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart} from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { useGlobalState } from "../ContextAPI/GlobalStateContext";
 
 export default function Card(props) {
-  let dispatch=useDispatchCart();
-  let data=useCart();
-  const priceRef=useRef();
-  const navigate=useNavigate();
-  let options=props.options;
-  let priceoptions=Object.keys(options)
-  const[qty,setQty]=useState(1);
-  const[size,setSize]=useState("");
+  const navigate = useNavigate();
+  const priceRef = useRef();
+  const [qty, setQty] = useState(1);
+  const [size, setSize] = useState("");
   const [favorite, setFavorite] = useState(false);
+  
+  const { state, dispatch } = useGlobalState(); // ✅ Single Hook
+  const cart = state.cart; // ✅ Use cart from global state
 
-  const handleAddToCart= async ()=>{
-      if(!localStorage.getItem('authToken')){
-        alert("Login to continue")
-        navigate("/login")
-        return
-      }
-    let food=[]
-    for(const item of data)
-    {
-      if(item.id===props.foodItem._id){
-         food=item;
-         break;
-      }
-    }
-    if(food !=[])
-    {
-      if(food.size===size)
-      {
-        await dispatch({type:"UPDATE",id:props.foodItem._id,price:finalPrice,qty:qty})
-        return;
-      }
-    
-     else if(food.size!==size){
+  let options = props.options;
+  let priceoptions = Object.keys(options);
 
-        await dispatch({type:"ADD",id:props.foodItem._id, name: props.foodItem.name, price:finalPrice, qty:qty, size:size})
-        return;
-      }
+  let finalPrice = qty * parseInt(options[size]);
+
+  useEffect(() => {
+    setSize(priceRef.current.value);
+  }, []);
+
+  const handleAddToCart = async () => {
+    // If user is not logged in, redirect to login page
+    if (!state.isLoggedIn) {
+      alert("Login to continue");
+      navigate("/login");
       return;
     }
-      await dispatch({type:"ADD",id:props.foodItem._id, name: props.foodItem.name, price:finalPrice, qty:qty, size:size})
-  }
-  
-  let finalPrice=qty*parseInt(options[size]);
-  useEffect(()=>{
-  setSize(priceRef.current.value)
-  },[])
+
+    let existingFood = cart.find((item) => item.id === props.foodItem._id && item.size === size);
+
+    if (existingFood) {
+      // ✅ Update quantity if same item & size already exists
+      await dispatch({
+        type: "UPDATE",
+        id: props.foodItem._id,
+        price: finalPrice,
+        qty: qty,
+      });
+    } else {
+      // ✅ Add new item to cart
+      await dispatch({
+        type: "ADD",
+        id: props.foodItem._id,
+        name: props.foodItem.name,
+        price: finalPrice,
+        qty: qty,
+        size: size,
+        img: props.foodItem.img,
+      });
+    }
+
+
+    console.log("state from cart",state)
+  };
+
   return (
     <div className="my-3">
       <div
@@ -78,50 +85,52 @@ export default function Card(props) {
         />
         <div className="card-body">
           <div className="d-flex justify-content-between">
-          <h5 className="card-title">{props.foodItem.name}</h5>
-          {favorite ? <FontAwesomeIcon icon={faHeart} onClick={() => setFavorite(!favorite)} style={{color: "#f2b315" }} /> : <FontAwesomeIcon icon={faHeart} onClick={() => setFavorite(!favorite)} style={{color: "#efd798d7" }} />}
-          </div>  
+            <h5 className="card-title">{props.foodItem.name}</h5>
+            <FontAwesomeIcon
+              icon={faHeart}
+              onClick={() => setFavorite(!favorite)}
+              style={{ color: favorite ? "#f2b315" : "#efd798d7" }}
+            />
+          </div>
 
           <div className="d-flex justify-content-between">
-         
             <div className="d-flex">
-            <select
-              className="m-2 h-100"
-              style={{
-                backgroundColor: "#f2b315",
-                color: "#2e2e35",
-                border: "none",
-                borderRadius: "5px",
-              }}
-              onChange={(e) => setQty(e.target.value)}
-            >
-              {Array.from(Array(6), (e, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {i + 1}
-                </option>
-              ))}
-            </select>
-  
-            <select
-              className="m-2 h-100"
-              style={{
-                backgroundColor: "#f2b315",
-                color: "#2e2e35",
-                border: "none",
-                borderRadius: "5px",
-              }}
-              ref={priceRef}
-              onChange={(e) => setSize(e.target.value)}
-            >
-              {priceoptions.map((data) => (
-                <option key={data} value={data}>
-                  {data}
-                </option>
-              ))}
-            </select>
+              <select
+                className="m-2 h-100"
+                style={{
+                  backgroundColor: "#f2b315",
+                  color: "#2e2e35",
+                  border: "none",
+                  borderRadius: "5px",
+                }}
+                onChange={(e) => setQty(Number(e.target.value))}
+              >
+                {Array.from({ length: 6 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="m-2 h-100"
+                style={{
+                  backgroundColor: "#f2b315",
+                  color: "#2e2e35",
+                  border: "none",
+                  borderRadius: "5px",
+                }}
+                ref={priceRef}
+                onChange={(e) => setSize(e.target.value)}
+              >
+                {priceoptions.map((data) => (
+                  <option key={data} value={data}>
+                    {data}
+                  </option>
+                ))}
+              </select>
             </div>
 
-  
             <div className="d-inline h-100 fs-5">
               <span style={{ color: "#f2b315" }}>Rs {finalPrice}/-</span>
             </div>
@@ -142,6 +151,4 @@ export default function Card(props) {
       </div>
     </div>
   );
-  
-
 }
