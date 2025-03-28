@@ -12,6 +12,7 @@ import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 import Signup from './screens/Signup';
 import MyOrder from './screens/MyOrder';
 import Profile from './screens/Profile';
+import CheckoutScreen from './screens/CheckoutScreen';
 import { useEffect } from 'react';
 import getUserData from './APIendpoint/getUserData.js';
 import { useGlobalState } from './ContextAPI/GlobalStateContext';
@@ -36,6 +37,7 @@ function App() {
        <Route exact path="/Createuser" element={<Signup/>} />
        <Route exact path="/MyOrder" element={<MyOrder/>} />
        <Route exact path="/Profile" element={<Profile/>} />
+       <Route exact path="/Checkout" element={<CheckoutScreen/>} />
      </Routes>
 
     </div>
